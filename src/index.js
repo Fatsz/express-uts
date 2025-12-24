@@ -16,5 +16,7 @@ app.use(express.json());
 app.use('/users', usersRoute);
 
 app.listen(PORT, () => {
-    console.log(`Server berhasil dirunning di port ${PORT}`)
+    console.log(`Server berhasil dirunning di port ${PORT}`);
+    console.log(`API running on http://localhost:${PORT}`);
+    console.log(`Android emulator: http://10.0.2.2:${PORT}`);
 })

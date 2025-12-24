@@ -28,9 +28,15 @@ const deleteUsers = (idUsers) => {
     return dbPool.execute(SQLQuery);
 }
 
+const getUserByEmail = (email) => {
+    const SQLQuery = 'SELECT * FROM users WHERE email = ? LIMIT 1';
+    return dbPool.execute(SQLQuery, [email]);
+}
+
 module.exports = {
     getAllUsers,
     createNewUsers,
     updateUsers,
-    deleteUsers
+    deleteUsers,
+    getUserByEmail,
 }

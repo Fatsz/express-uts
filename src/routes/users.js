@@ -8,7 +8,8 @@ const router = express.Router();
 router.get('/', usersController.getAllUsers);
 
 // CREATE - POST
-router.post('/', usersController.createNewUsers);
+router.post('/register', usersController.createNewUsers);
+router.post('/login', usersController.login);
 
 // UPDATE - PATCH
 router.patch('/:idUser', usersController.updateUsers);
