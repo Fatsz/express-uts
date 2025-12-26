@@ -33,10 +33,24 @@ const getUserByEmail = (email) => {
     return dbPool.execute(SQLQuery, [email]);
 }
 
+const updateProfile = (body, idUsers) => {
+    const SQLQuery = `UPDATE users 
+                    SET username='${body.username}', email='${body.email}' WHERE id_users='${idUsers}'`;
+
+    return dbPool.execute(SQLQuery);
+}
+
+const getUserById = (idUsers) => {
+    const SQLQuery = 'SELECT * FROM users WHERE id_users = ? LIMIT 1';
+    return dbPool.execute(SQLQuery, [idUsers]);
+}
+
 module.exports = {
     getAllUsers,
     createNewUsers,
     updateUsers,
     deleteUsers,
     getUserByEmail,
+    updateProfile,
+    getUserById,
 }
