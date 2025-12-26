@@ -1,5 +1,6 @@
 const database = require('../config/database');
 const UsersModels = require('../models/users');
+const crypto = require('crypto');
 
 const getAllUsers = async (req, res) => {
 
@@ -90,9 +91,93 @@ const deleteUsers = async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({
+            message: "Email dan password wajib diisi",
+        });
+    }
+
+    try {
+        const [rows] = await UsersModels.getUserByEmail(email);
+
+        if (!rows || rows.length === 0) {
+            return res.status(401).json({
+                message: "Kredensial tidak valid",
+            });
+        }
+
+        const user = rows[0];
+        const hashed = crypto.createHash('md5').update(password).digest('hex');
+
+        if (user.password !== hashed) {
+            return res.status(401).json({
+                message: "Kredensial tidak valid",
+            });
+        }
+
+        res.json({
+            message: "LOGIN success",
+            data: {
+                id_users: user.id_users,
+                username: user.username,
+                email: user.email,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+}
+
+const editProfile = async (req, res) => {
+    const { idUser } = req.params;
+    const { body } = req;
+
+    if (!body.username || !body.email) {
+        return res.status(400).json({
+            message: "Username dan email wajib diisi",
+        });
+    }
+
+    try {
+        // Check apakah user dengan ID tersebut ada
+        const [userRows] = await UsersModels.getUserById(idUser);
+        
+        if (!userRows || userRows.length === 0) {
+            return res.status(404).json({
+                message: "User tidak ditemukan",
+            });
+        }
+
+        // Update profile (tanpa password)
+        await UsersModels.updateProfile(body, idUser);
+        
+        res.json({
+            message: "Edit profile success",
+            data: {
+                id_users: idUser,
+                username: body.username,
+                email: body.email,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+}
+
 module.exports = {
     getAllUsers,
     createNewUsers,
     updateUsers,
-    deleteUsers
+    deleteUsers,
+    login,
+    editProfile,
 }

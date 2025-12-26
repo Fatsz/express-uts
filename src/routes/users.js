@@ -8,10 +8,14 @@ const router = express.Router();
 router.get('/', usersController.getAllUsers);
 
 // CREATE - POST
-router.post('/', usersController.createNewUsers);
+router.post('/register', usersController.createNewUsers);
+router.post('/login', usersController.login);
 
-// UPDATE - PATCH
+// UPDATE - PATCH (full update with password)
 router.patch('/:idUser', usersController.updateUsers);
+
+// UPDATE - PATCH profile (edit profile tanpa password)
+router.patch('/:idUser/profile', usersController.editProfile);
 
 // DELETE - DELETE
 router.delete('/:idUser', usersController.deleteUsers);
